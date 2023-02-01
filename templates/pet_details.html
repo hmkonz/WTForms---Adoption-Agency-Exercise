@@ -11,11 +11,13 @@ title %}Pet Detail Page{% endblock %} {% block content %}
     <h2>{{pet.species}}</h2>
     {% endif %} {% if pet.age %}
     <h2>{{pet.age}} years old</h2>
+    {% endif %} {% if pet.notes %}
+    <h2>{{pet.notes}}</h2>
     {% endif %}
     <br />
 
     <h2>Edit Pet</h2>
-    <form action="/pet/{{pet.id}}/edit" method="POST">
+    <form action="/pet/{{pet.id}}" method="POST">
       {{form.hidden_tag()}} {% for field in form if field.widget.input_type !=
       'hidden' %}
 
@@ -26,7 +28,7 @@ title %}Pet Detail Page{% endblock %} {% block content %}
       {% endfor %}
 
       <a href="/pet/{{pet.id}}" id="Button3">Cancel</a>
-      <a href="/" id="Button4">Save</a>
+      <button type="submit" id="Button4">Save</button>
     </form>
   </div>
 </body>
