@@ -1,18 +1,44 @@
 img {
     width: 300px;
+    height: 300px;
+    object-fit: cover;
+}
+
+a {
+    text-decoration: none;
+    font: bold 15px Arial;
+    color: rgb(0, 166, 255)  
+}
+
+b {
+    font: bold 15px Arial;
+    color:rgb(91, 94, 97) 
+}
+ 
+.url-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    vertical-align: top;
+    text-align: center;
+      
+}
+
+.project > img {
+    flex: 0 0 100%;
 }
 
 
 #Button1 {
-    font: bold 11px Arial;
+    font: bold 14px Arial;
     text-decoration: none;
-    background-color: blue;
+    background-color: rgb(0, 166, 255);
     color: white;
-    padding: 2px 6px 2px 6px;
-    border-top: 1px solid blue;
-    border-right: 1px solid blue;
-    border-bottom: 1px solid blue;
-    border-left: 1px solid blue;
+    padding: 10px 20px 10px 20px;
+    border-top: 1px solid rgb(0, 166, 255);
+    border-right: 1px solid rgb(0, 166, 255);
+    border-bottom: 1px solid rgb(0, 166, 255);
+    border-left: 1px solid rgb(0, 166, 255);
     border-radius: 5px;
     margin-left: 30px;  
 }

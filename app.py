@@ -1,7 +1,7 @@
 from flask import Flask, request, render_template,  redirect, session
 from flask_debugtoolbar import DebugToolbarExtension
 from models import db,  connect_db, Pet
-from forms import AddPetForm
+from forms import AddPetForm, EditPetForm
 
 app = Flask(__name__)
 
@@ -10,69 +10,71 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_ECHO'] = True
 app.config['SECRET_KEY'] = "chickenzarecool21837"
 app.config['DEBUG_TB_INTERCEPT_REDIRECTS'] = False
-debug = DebugToolbarExtension(app)
+toolbar = DebugToolbarExtension(app)
 
 connect_db(app)
+db.create_all()
+
+##############################################################################
 
 
 @app.route('/')
 def home_page():
-    """Render home page"""
+    """Show all pets"""
     pets=Pet.query.all()
     
     return render_template("list_pets.html", pets=pets)
 
 
-# @app.route('/phones')
-# def list_phones():
-#     """Renders directory of employees and phone numbers  (from dept)"""
-#     emps = Employee.query.all()
-#     return render_template('phones.html', emps=emps)
+@app.route('/add', methods = ['GET', 'POST'])
+def add_pet():
+    """Handle form submission for creating a new pet"""
+
+    # Create a new instance of AddPetForm
+    form = AddPetForm()
+    # validate_on_submit() is a method on form that checks if is a POST request AND if token is valid. If so, do the following or else go back to create_pet.html template
+    if form.validate_on_submit():
+        name = form.name.data
+        species = form.species.data
+        photo_url = form.photo_url.data
+        age = form.age.data
+        notes = form.notes.data
+     
+
+        # pass in data to new instance of Pet class
+        new_pet=Pet(name=name, species=species, photo_url=photo_url, age=age, notes=notes)
+        # add new pet to data base
+        db.session.add(new_pet)
+        db.session.commit()
+        return redirect('/')
+  
+    else:
+        """# As a GET request (or if token is invalid), show the form for creating a new pet"""
+        # pass the instance object 'form' representing the form to the template
+        return render_template('create_pet.html', form=form)
 
 
-# @app.route('/snacks/new', methods=["GET", "POST"])
-# def add_snack():
-#     """Renders snack form (GET) or handles snack form submission (POST)"""
-#     form = AddSnackForm()
-#     if form.validate_on_submit():
-#         name = form.name.data
-#         price = form.price.data
-#         flash(f"Created new snack: name is {name}, price is ${price}")
-#         return redirect('/')
-#     else:
-#         return render_template("add_snack_form.html", form=form)
 
+@app.route('/pet/<int:pet_id>', methods =['GET', 'POST'])
+def pet_show_edit(pet_id):
+    """Handle form submission for editing a new pet"""
 
-# @app.route('/employees/new', methods=["GET", "POST"])
-# def add_employee():
-#     form = EmployeeForm()
-#     depts = db.session.query(Department.dept_code, Department.dept_name)
-#     form.dept_code.choices = depts
-#     if form.validate_on_submit():
-#         name = form.name.data
-#         state = form.state.data
-#         dept_code = form.dept_code.data
+    # lookup data on pet based on its id
+    pet = Pet.query.get_or_404(pet_id)
+    # 'pet' populates the fields in Pet From in the pet_details.html form
+    form = EditPetForm(obj=pet)
+    # validate_on_submit() is a method on form that checks if is a POST request AND if token is valid. If so, do the following or else go back to pet_details.html template
+    if form.validate_on_submit():
+       
+        pet.photo_url = form.photo_url.data
+        pet.notes = form.notes.data
+        pet.available=form.available.data
 
-#         emp = Employee(name=name, state=state, dept_code=dept_code)
-#         db.session.add(emp)
-#         db.session.commit()
-#         return redirect('/phones')
-#     else:
-#         return render_template('add_employee_form.html', form=form)
+        db.session.commit()
 
+        return redirect('/')
 
-# @app.route('/employees/<int:id>/edit', methods=["GET", "POST"])
-# def edit_employee(id):
-#     emp = Employee.query.get_or_404(id)
-#     form = EmployeeForm(obj=emp)
-#     depts = db.session.query(Department.dept_code, Department.dept_name)
-#     form.dept_code.choices = depts
+    else:
+        """Show a page with info on a specific pet"""
 
-#     if form.validate_on_submit():
-#         emp.name = form.name.data
-#         emp.state = form.state.data
-#         emp.dept_code = form.dept_code.data
-#         db.session.commit()
-#         return redirect('/phones')
-#     else:
-#         return render_template("edit_employee_form.html", form=form)
+        return render_template('pet_details.html', form=form, pet=pet)
