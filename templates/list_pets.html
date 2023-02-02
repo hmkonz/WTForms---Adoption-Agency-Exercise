@@ -3,15 +3,21 @@ title %}Pets{% endblock %} {% block content %}
 
 <h1>Pets</h1>
 <div class="url-container">
-  <ul>
-    {% for pet in pets %}
+  {% for pet in pets %}
+  <div class="pet-container">
     <img src="{{pet.photo_url}}" alt="{{pet.name}}" />
-    <a href="/pet/{{pet.id}}">{{pet.name}}</a>
 
-    {% if pet.available %}
-    <b>is available! </b>
-    {% endif %} {% endfor %}
-  </ul>
+    <p>
+      <a href="/pet/{{pet.id}}">{{pet.name}}</a>
+
+      {% if pet.available %}
+
+      <b>is available! </b>
+
+      {% endif %}
+    </p>
+  </div>
+  {% endfor %}
 </div>
 <br />
 <br />

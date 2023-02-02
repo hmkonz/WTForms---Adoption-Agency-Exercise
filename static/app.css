@@ -17,16 +17,18 @@ b {
  
 .url-container {
     display: flex;
-    flex-direction: column;
-    justify-content: space-evenly;
+    gap: 10px;
+    flex-direction: row;
     vertical-align: top;
-    text-align: center;
-      
+    text-align: center; 
+    flex-wrap: wrap; 
 }
 
-.project > img {
-    flex: 0 0 100%;
-}
+/* .pet-container {
+    width: 30%;
+    margin-right:5px;
+} */
+
 
 
 #Button1 {
